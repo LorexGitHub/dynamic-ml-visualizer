@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: cancer-api
+    ports:
+      - "8000:8000"
+
+  ui-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: cancer-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api-service:8000
+    depends_on:
+      - api-service

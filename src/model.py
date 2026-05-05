@@ -4,6 +4,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_breast_cancer
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -30,10 +32,12 @@ class ModelManager:
         self.model = None
         self.scaler = None
         self.pca = None
+        self.pca_svc = None
         self.is_trained = False
         self.feature_names = None
         self.X_train_pca, self.X_test_pca = None, None
         self.y_train, self.y_test = None, None
+        self.X_train, self.X_test = None, None
         self.history = {"losses": [], "accuracies": []}
 
     def load_data(self):
@@ -43,13 +47,14 @@ class ModelManager:
         X, y = df.values, data.target
         
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
         self.scaler = StandardScaler()
-        X_train_sc = self.scaler.fit_transform(self.X_train)
-        self.X_test_sc = self.scaler.transform(self.X_test)
+        X_train_scaled = self.scaler.fit_transform(self.X_train)
+        X_test_scaled = self.scaler.transform(self.X_test)
         
         self.pca = PCA(n_components=2)
-        self.X_train_pca = self.pca.fit_transform(X_train_sc)
-        self.X_test_pca = self.pca.transform(X_test_sc)
+        self.X_train_pca = self.pca.fit_transform(X_train_scaled)
+        self.X_test_pca = self.pca.transform(X_test_scaled)
         
         return {"features": self.feature_names, "train_size": len(self.y_train)}
 
@@ -59,10 +64,11 @@ class ModelManager:
         optimizer = optim.Adam(self.model.parameters(), lr=lr)
         criterion = nn.BCELoss()
         
-        loader = DataLoader(TensorDataset(
-            torch.FloatTensor(self.scaler.transform(self.X_train)), 
-            torch.FloatTensor(self.y_train).unsqueeze(1)
-        ), batch_size=32, shuffle=True)
+        # Use the already scaled data
+        X_train_tensor = torch.FloatTensor(self.scaler.transform(self.X_train))
+        y_train_tensor = torch.FloatTensor(self.y_train).unsqueeze(1)
+        
+        loader = DataLoader(TensorDataset(X_train_tensor, y_train_tensor), batch_size=32, shuffle=True)
         
         self.history = {"losses": [], "accuracies": []}
         for _ in range(epochs):
@@ -81,7 +87,11 @@ class ModelManager:
             
         self.model.eval()
         with torch.no_grad():
-            preds = (self.model(torch.FloatTensor(self.scaler.transform(self.X_test))) >= 0.5).numpy().flatten()
+            X_test_tensor = torch.FloatTensor(self.scaler.transform(self.X_test))
+            preds = (self.model(X_test_tensor) >= 0.5).numpy().flatten()
+            
+        self.pca_svc = SVC(kernel='rbf', gamma=0.5)
+        self.pca_svc.fit(self.X_train_pca, self.y_train)
         
         self.is_trained = True
         return float(accuracy_score(self.y_test, preds)), confusion_matrix(self.y_test, preds).tolist()
@@ -89,9 +99,11 @@ class ModelManager:
     def predict(self, features):
         if not self.is_trained: return None
         self.model.eval()
+        features_np = np.array(features).reshape(1, -1)
         with torch.no_grad():
-            prob = self.model(torch.FloatTensor(self.scaler.transform([features]))).item()
-        pca_coords = self.pca.transform(self.scaler.transform([features]))[0].tolist()
+            features_scaled = self.scaler.transform(features_np)
+            prob = self.model(torch.FloatTensor(features_scaled)).item()
+        pca_coords = self.pca.transform(features_scaled)[0].tolist()
         return {"prediction": "Benign" if prob >= 0.5 else "Malignant", "probability": prob, "pca": pca_coords}
 
     def _fig_to_b64(self, fig):
@@ -115,6 +127,7 @@ class ModelManager:
         return self._fig_to_b64(fig)
 
     def get_confusion_plot(self, cm):
+        cm = np.array(cm)
         fig, ax = plt.subplots(figsize=(6,5))
         im = ax.imshow(cm, cmap='Blues')
         ax.set_xticks([0,1]); ax.set_yticks([0,1])
@@ -124,6 +137,34 @@ class ModelManager:
             for j in range(2):
                 ax.text(j, i, str(cm[i][j]), ha="center", va="center", color="white" if cm[i][j] > cm.max()/2 else "black", fontsize=16)
         return self._fig_to_b64(fig)
+    
+    def get_decision_boundary_plot(self):
+        if not self.is_trained or self.pca_svc is None:
+            return None
+            
+        fig, ax = plt.subplots(figsize=(8,6))
+        
+        # Create a grid in the 2D PCA space
+        x_min, x_max = self.X_train_pca[:, 0].min() - 1, self.X_train_pca[:, 0].max() + 1
+        y_min, y_max = self.X_train_pca[:, 1].min() - 1, self.X_train_pca[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100), np.linspace(y_min, y_max, 100))
+        
+        # Predict the boundary using the SVM
+        Z = self.pca_svc.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+        
+        # Draw the colored background and the black decision line
+        ax.contourf(xx, yy, Z, alpha=0.2, cmap='coolwarm')
+        ax.contour(xx, yy, Z, colors='black', linewidths=1.5, linestyles='--')
+        
+        # Draw the original dataset points on top
+        ax.scatter(self.X_train_pca[:,0], self.X_train_pca[:,1], c=self.y_train, cmap='coolwarm', edgecolors='black', s=40, label='Train Data')
+        ax.scatter(self.X_test_pca[:,0], self.X_test_pca[:,1], c=self.y_test, cmap='coolwarm', marker='^', edgecolors='black', s=60, label='Test Data')
+        
+        ax.set_title("Decision Boundary over Original Dataset")
+        ax.legend()
+        return self._fig_to_b64(fig)
 
+# Initialize on startup
 manager = ModelManager()
 manager.load_data()

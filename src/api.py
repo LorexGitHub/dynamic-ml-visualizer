@@ -36,3 +36,12 @@ def predict(data: PredictFeatures):
     res = manager.predict(data.features)
     if not res: raise HTTPException(400, "Model not trained yet")
     return res
+
+@app.get("/plot/decision-boundary")
+def get_decision_boundary():
+    if not manager.is_trained:
+        raise HTTPException(400, "Model not trained yet")
+    plot_b64 = manager.get_decision_boundary_plot()
+    if not plot_b64:
+        raise HTTPException(500, "Failed to generate boundary plot")
+    return {"image_base64": plot_b64}

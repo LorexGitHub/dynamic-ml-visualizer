@@ -1,13 +1,14 @@
 import streamlit as st
 import requests
 import base64
+import os
 
 st.set_page_config(page_title="Cancer Prediction Visualizer", page_icon="🔬")
 
 st.title("🔬 Cancer Prediction Visualizer")
-st.markdown("Train a PyTorch model and visualize outcomes using Matplotlib.")
+st.markdown("Train a PyTorch model and visualize evaluation outcomes using Matplotlib.")
 
-API_URL = "http://api-service:8000" # K8s internal service name
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # 1. Fetch initial data & PCA plot
 try:
@@ -15,7 +16,7 @@ try:
     data_info = info_res.json()
 except requests.exceptions.RequestException:
     data_info = None
-    st.error("🚨 Could not connect to the ML API. Is the K8s port-forward running?")
+    st.error("🚨 Could not connect to the ML API. Is the backend running?")
 
 if data_info:
     st.success(f"✅ Dataset loaded: {data_info['data']['train_size']} training samples")
@@ -57,33 +58,13 @@ if st.button("Train PyTorch Model", type="primary", use_container_width=True):
                 st.image(base64.b64decode(data["training_plot_base64"]), caption="Loss & Accuracy Curves")
                 st.image(base64.b64decode(data["confusion_plot_base64"]), caption="Confusion Matrix Heatmap")
                 
+                with st.spinner("Generating decision boundary..."):
+                    try:
+                        boundary_res = requests.get(f"{API_URL}/plot/decision-boundary", timeout=10)
+                        boundary_res.raise_for_status()
+                        st.image(base64.b64decode(boundary_res.json()["image_base64"]), caption="Decision Boundary in PCA Space")
+                    except requests.exceptions.RequestException:
+                        st.warning("Could not load decision boundary plot.")
+                
             except requests.exceptions.RequestException as e:
                 st.error("🚨 Training failed or API crashed.")
-
-st.divider()
-
-# 3. Prediction Section
-st.subheader("🔮 Make a Prediction")
-if data_info:
-    features = data_info["data"]["features"]
-    inputs = []
-    cols = st.columns(3)
-    for i, feat in enumerate(features):
-        with cols[i % 3]:
-            val = st.number_input(feat, key=f"feat_{i}", format="%4f")
-            inputs.append(val)
-
-    if st.button("Predict Outcome", type="secondary", use_container_width=True):
-        with st.spinner("Predicting..."):
-            try:
-                res = requests.post(f"{API_URL}/predict", json={"features": inputs}, timeout=10)
-                res.raise_for_status()
-                pred_data = res.json()
-                
-                if pred_data["prediction"] == "Benign":
-                    st.success(f"✅ Result: **Benign** (Confidence: {pred_data['probability']:.2%})")
-                else:
-                    st.error(f"⚠️ Result: **Malignant** (Confidence: {1 - pred_data['probability']:.2%})")
-                    
-            except requests.exceptions.RequestException as e:
-                st.error("🚨 Prediction failed. Make sure you trained the model first!")
