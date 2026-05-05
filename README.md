@@ -1,4 +1,4 @@
-### 🔬 dynamic-ml-visualizer
+# 🔬 dynamic-ml-visualizer
 
 An interactive, containerized machine learning application that trains a PyTorch neural network on the a Dataset and visualizes the outcomes using Matplotlib. 
 
