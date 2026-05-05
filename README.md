@@ -47,11 +47,7 @@ Run the Application
 Clone or download this repository. 
 Open a terminal in the project root directory. 
 Run the following command:
-bash
-     
 ```   
-git clone https://github.com/LorexGitHub/cancer-predictor.git
-cd cancer-predictor
 docker compose up --build  
 ```
       
