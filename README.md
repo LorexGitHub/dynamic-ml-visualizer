@@ -6,8 +6,7 @@ An interactive, containerized machine learning application that trains a PyTorch
 
 
 
-https://github.com/user-attachments/assets/7d9a45e2-becd-462a-bc85-2a7318a2cea6
-
+https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 
 
