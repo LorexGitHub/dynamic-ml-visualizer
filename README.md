@@ -5,7 +5,7 @@ An interactive, containerized machine learning application that trains a PyTorch
 Built with a decoupled microservice architecture: a FastAPI backend handles the heavy ML computations and image rendering, while a Streamlit frontend serves as the interactive web dashboard.
 
 ### 📁 Project Structure
-'''
+```
 cancer-predictor/
 ├── docker-compose.yml      
 ├── Dockerfile.api          
@@ -17,10 +17,10 @@ cancer-predictor/
 │   └── ui/
 │       └── ui.py           
 └── README.md
-'''
+```
 
 ### ⚙️ Tech Stack
-'''
+```
 Language: Python 3.10
 API Framework: FastAPI + Uvicorn
 Deep Learning: PyTorch (Feedforward Neural Network)
@@ -29,31 +29,31 @@ Visualization: Matplotlib (Agg backend for containerized base64 encoding)
 Frontend: Streamlit
 Containerization: Docker
 Orchestration: Docker Compose
-Architecture: Decoupled Microservices (API + UI)
-'''
+```
 
 ###🚀 Quick Start 
 Prerequisites 
 
      Docker Desktop  installed and running.
+     Python 3.10+ installed
      
 
 Run the Application 
 
-    Clone or download this repository. 
-    Open a terminal in the project root directory. 
-    Run the following command:
-    bash
+Clone or download this repository. 
+Open a terminal in the project root directory. 
+Run the following command:
+bash
      
-    '''
+```
      
-    git clone https://github.com/LorexGitHub/cancer-predictor.git
-    cd cancer-predictor
-    docker compose up --build
+git clone https://github.com/LorexGitHub/cancer-predictor.git
+cd cancer-predictor
+docker compose up --build
      
-    '''
+```
       
-    Wait for the terminal to display: You can now view your Streamlit app in your browser. 
-    Open your browser and navigate to: http://localhost:8501  
+Wait for the terminal to display: You can now view your Streamlit app in your browser. 
+Open your browser and navigate to: http://localhost:8501  
 
 (To stop the application, press Ctrl+C in your terminal). 
