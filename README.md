@@ -1,4 +1,4 @@
-### 🔬 Cancer Prediction Visualizer
+### 🔬 dynamic-ml-visualizer
 
 An interactive, containerized machine learning application that trains a PyTorch neural network on the Breast Cancer Wisconsin dataset and visualizes the outcomes using Matplotlib. 
 
