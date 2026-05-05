@@ -1,8 +1,13 @@
 ### 🔬 dynamic-ml-visualizer
 
-An interactive, containerized machine learning application that trains a PyTorch neural network on the Breast Cancer Wisconsin dataset and visualizes the outcomes using Matplotlib. 
+An interactive, containerized machine learning application that trains a PyTorch neural network on the a Dataset and visualizes the outcomes using Matplotlib. 
 
-Built with a decoupled microservice architecture: a FastAPI backend handles the heavy ML computations and image rendering, while a Streamlit frontend serves as the interactive web dashboard.
+### Demo
+
+
+https://github.com/user-attachments/assets/b0e0389f-b358-469f-b7c7-363bbb187fd4
+
+
 
 ### 📁 Project Structure
 ```
