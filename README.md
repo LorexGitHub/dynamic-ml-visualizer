@@ -35,7 +35,7 @@ Orchestration: Docker Compose
 CI/CD GitHub Actions
 ```
 
-###🚀 Quick Start 
+### 🚀 Quick Start 
 Prerequisites 
 
      Docker Desktop  installed and running.
@@ -49,12 +49,10 @@ Open a terminal in the project root directory.
 Run the following command:
 bash
      
-```
-     
+```   
 git clone https://github.com/LorexGitHub/cancer-predictor.git
 cd cancer-predictor
-docker compose up --build
-     
+docker compose up --build  
 ```
       
 Wait for the terminal to display: You can now view your Streamlit app in your browser. 
