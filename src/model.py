@@ -17,6 +17,11 @@ from torch.utils.data import DataLoader, TensorDataset
 import io
 import base64
 
+'''
+The CancerPredictor class is a PyTorch neural network model designed for binary classification tasks.
+we utilize a feedforward neural network architecture with two hidden (ReLU) and dropout layers.
+0 represents Malignant (Cancerous) and 1 represents Benign (Not Cancerous).
+'''
 class CancerPredictor(nn.Module):
     def __init__(self, input_dim, hidden_dim=32):
         super().__init__()
@@ -26,7 +31,12 @@ class CancerPredictor(nn.Module):
             nn.Linear(hidden_dim // 2, 1), nn.Sigmoid()
         )
     def forward(self, x): return self.network(x)
-
+    
+'''
+The ModelManager class is responsible for managing the training, prediction, and visualization of a 
+cancer prediction model. It provides methods to load and preprocess the data, train the model, make 
+predictions, and generate plots to visualize the model's performance.
+'''
 class ModelManager:
     def __init__(self):
         self.model = None
@@ -97,6 +107,7 @@ class ModelManager:
         return float(accuracy_score(self.y_test, preds)), confusion_matrix(self.y_test, preds).tolist()
 
     def predict(self, features):
+        
         if not self.is_trained: return None
         self.model.eval()
         features_np = np.array(features).reshape(1, -1)
