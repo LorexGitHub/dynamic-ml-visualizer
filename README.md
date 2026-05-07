@@ -18,8 +18,8 @@ graph TD
     C --> D[Dense 1 + Sigmoid]
     D --> E((Output: 0.0 to 1.0))
     
-    style A fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style E fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style A fill:#161616,stroke:#333,stroke-width:2px
+    style E fill:#13431b,stroke:#28a745,stroke-width:2px
 ```
 - Dynamic Input Layer: The model automatically re-initializes its input dimension when the user swaps datasets (e.g., 30 features for Cancer, 15 for Churn).
 - Dropout (p=0.2): Randomly disables 20% of neurons during training to prevent overfitting on small datasets.
