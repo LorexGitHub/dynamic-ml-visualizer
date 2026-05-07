@@ -9,7 +9,10 @@ An interactive, containerized machine learning application that trains a PyTorch
 https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 
-
+### 🧠 Key Model Design Choices
+- Dynamic Input Layer: The model automatically re-initializes its input dimension when the user swaps datasets (e.g., 30 features for Cancer, 15 for Churn).
+- Dropout (p=0.2): Randomly disables 20% of neurons during training to prevent overfitting on small datasets.
+- Sigmoid Output: Compresses the final neuron into a probability, thresholded at 0.5 for binary classification.
 
 ### 📁 Project Structure
 ```
