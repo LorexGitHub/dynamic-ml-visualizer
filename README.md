@@ -13,7 +13,7 @@ https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 ```mermaid
 graph TD
-    A[Input Layer<br>Dynamic Size] --> B[Dense + ReLU + Dropout 0.2] B --> C[Dense + ReLU + Dropout 0.2<br>Compressed Size] C --> D[Dense 1 + Sigmoid] D --> E((Output: 0.0 to 1.0))
+    A[Input Layer<br>Dynamic Size] --> B[Dense + ReLU + Dropout 0.2]    B --> C[Dense + ReLU + Dropout 0.2<br>Compressed Size]    C --> D[Dense 1 + Sigmoid]    D --> E((Output: 0.0 to 1.0))
     
     style A fill:#161616,stroke:#333,stroke-width:2px
     style E fill:#13431b,stroke:#28a745,stroke-width:2px
