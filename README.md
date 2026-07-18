@@ -11,7 +11,8 @@ https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 ### 🧠 Model Architecture
 
-https://excalidraw.com/#json=OyQzh6vQh1A2xqa5VG4qx,JLYmAlX5dQI15v6_8f46Cg
+<img width="606" height="750" alt="image" src="https://github.com/user-attachments/assets/d8c594af-f91d-42ea-92e4-e06f2c07641f" />
+
 
 
 Key Model Design Choices
