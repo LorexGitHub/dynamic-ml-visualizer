@@ -11,7 +11,8 @@ https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 ### 🧠 Model Architecture
 
-<img width="738" height="802" alt="image" src="https://github.com/user-attachments/assets/83b9925d-2368-407c-a1cb-cc2e81e06ce4" />
+[Uploading Untitled-2026-07-18-2009.excalidraw…]()
+
 
 Key Model Design Choices
 - Dynamic Input Layer: The model automatically re-initializes its input dimension when the user swaps datasets (e.g., 30 features for Cancer, 15 for Churn).
