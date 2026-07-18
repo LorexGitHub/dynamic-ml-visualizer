@@ -11,7 +11,7 @@ https://github.com/user-attachments/assets/cdcdfec1-8220-4d51-97ed-47ff129eee8c
 
 ### 🧠 Model Architecture
 
-[Uploading Untitled-2026-07-18-2009.excalidraw…]()
+https://excalidraw.com/#json=OyQzh6vQh1A2xqa5VG4qx,JLYmAlX5dQI15v6_8f46Cg
 
 
 Key Model Design Choices
